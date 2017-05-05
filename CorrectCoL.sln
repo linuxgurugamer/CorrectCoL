@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrectCoL", "CorrectCoL.csproj", "{9C4E6C56-0EBC-4503-849F-19C041808665}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrectCoL", "source\CorrectCoL.csproj", "{9C4E6C56-0EBC-4503-849F-19C041808665}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{0C843E07-5125-4BB6-B48B-697A10499BBF}"
+	ProjectSection(SolutionItems) = preProject
+		buildRelease.bat = buildRelease.bat
+		CorrectCoL.version = CorrectCoL.version
+		CorrectCoL_Changelog = CorrectCoL_Changelog
+		deploy.bat = deploy.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

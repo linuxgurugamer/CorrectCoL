@@ -23,19 +23,80 @@ using KSP.IO;
 
 namespace CorrectCoL
 {
-    public static class GraphWindow
+    public class GraphWindow
     {
-        public const int wnd_width = 620;
+        public const int wnd_width = 650;
         public const int wnd_height = 500;
 
-        static Rect wnd_rect = new Rect(100.0f, 100.0f, wnd_width, wnd_height);
-        public static bool shown = false;
+        static public Rect wnd_rect = new Rect(100.0f, 100.0f, wnd_width, wnd_height);
+        public  bool shown = false;
         static PluginConfiguration conf;
 
         static bool init_gui = false;
         static bool locked = false;
 
-        public static void OnGUI()
+        GUIStyle winStyle;
+
+        public void  Start()
+        {
+            GUI.color = new Color(0.85f, 0.85f, 0.85f, 1);
+
+            winStyle = new GUIStyle(HighLogic.Skin.window);
+            winStyle.active.background = winStyle.normal.background;
+            Texture2D tex = winStyle.normal.background; //.CreateReadable();
+
+            var pixels = tex.GetPixels32();
+            for (int i = 0; i < pixels.Length; ++i)
+                pixels[i].a = 255;
+
+            tex.SetPixels32(pixels); tex.Apply();
+
+            winStyle.active.background = tex;
+            winStyle.focused.background = tex;
+            winStyle.normal.background = tex;
+        }
+
+        string tooltip = "";
+        bool drawTooltip = true;
+        // Vector2 mousePosition;
+        Vector2 tooltipSize;
+        float tooltipX, tooltipY;
+        Rect tooltipRect;
+        void SetupTooltip()
+        {
+            Vector2 mousePosition;
+            mousePosition.x = Input.mousePosition.x;
+            mousePosition.y = Screen.height - Input.mousePosition.y;
+          //  Log.Info("SetupTooltip, tooltip: " + tooltip);
+            if (tooltip != null && tooltip.Trim().Length > 0)
+            {
+                tooltipSize = HighLogic.Skin.label.CalcSize(new GUIContent(tooltip));
+                tooltipX = (mousePosition.x + tooltipSize.x > Screen.width) ? (Screen.width - tooltipSize.x) : mousePosition.x;
+                tooltipY = mousePosition.y;
+                if (tooltipX < 0) tooltipX = 0;
+                if (tooltipY < 0) tooltipY = 0;
+                tooltipRect = new Rect(tooltipX - 1, tooltipY - tooltipSize.y, tooltipSize.x + 4, tooltipSize.y);
+            //    Log.Info("display x: " + tooltipX.ToString() + ", y: " + tooltipY.ToString() + ",  size.x,y: " + tooltipSize.x.ToString() + ", " + tooltipSize.y.ToString() + ", tooltip: " + tooltip);
+
+                //  GUI.Label(new Rect(x, y, size.x, size.y), tooltip);
+            }
+        }
+
+        void TooltipWindow(int id)
+        {
+            //DrawTooltip();
+
+            //Log.Info("TooltipWindow, tooltip: " + tooltip);
+            GUI.Label(new Rect(2, 0, tooltipRect.width - 2, tooltipRect.height), tooltip, HighLogic.Skin.label);
+        }
+
+        void displayRect()
+        {
+            Rect aa = new Rect(); ;
+            GUI.TextField(aa, "ssss");
+        }
+
+        public void OnGUI()
         {
             if (!init_gui)
             {
@@ -45,6 +106,13 @@ namespace CorrectCoL
             EditorLogic editorlogic = EditorLogic.fetch;
             if (shown)
             {
+
+
+                if (drawTooltip /* && HighLogic.CurrentGame.Parameters.CustomParams<JanitorsClosetSettings>().buttonTooltip*/ && tooltip != null && tooltip.Trim().Length > 0)
+                {
+                    SetupTooltip();
+                    GUI.Window(1234, tooltipRect, TooltipWindow, "");
+                }
                 if (wnd_rect.Contains(Input.mousePosition))
                 {
                     if (!CameraMouseLook.MouseLocked && !locked)
@@ -58,7 +126,7 @@ namespace CorrectCoL
                     //editorlogic.Unlock("CorrectCoLWindow");
                     locked = false;
                 }
-                wnd_rect = GUI.Window(54665949, wnd_rect, _drawGUI, "Static stability analysis");
+                wnd_rect = GUILayout.Window(54665949, wnd_rect, _drawGUI, "Static stability analysis", winStyle);
             }
             else if (locked)
             {
@@ -67,58 +135,80 @@ namespace CorrectCoL
             }
         }
 
-        static void _drawGUI(int id)
+        public bool autoUpdate = false;
+
+        void _drawGUI(int id)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
-                GUILayout.BeginVertical(GUILayout.Width(graph_width + 10));
-                    // draw pitch box
-                    GUILayout.Label("pitch");
-                    GUILayout.Box(pitch_texture);
-                    // draw yaw box
-                    GUILayout.Label("yaw");
-                    GUILayout.Box(yaw_texture);
-                GUILayout.EndVertical();
-                // draw side text
-                GUILayout.BeginVertical(GUILayout.Width(wnd_width - graph_width - 30));
-                    GUILayout.Label("side");
-                    bool draw = GUILayout.Button("Update");
-                    GUILayout.BeginHorizontal();
-                        GUILayout.Label("aoa range:");
-                        aoa_range_str = GUILayout.TextField(aoa_range_str);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                        GUILayout.Label("aoa marks:");
-                        aoa_mark_delta_str = GUILayout.TextField(aoa_mark_delta_str);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                        GUILayout.Label("aoa compress:");
-                        aoa_compress_str = GUILayout.TextField(aoa_compress_str);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                        GUILayout.Label("speed:");
-                        speed_str = GUILayout.TextField(speed_str);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                        GUILayout.Label("altitude:");
-                        alt_str = GUILayout.TextField(alt_str);
-                    GUILayout.EndHorizontal();
-                    //GUILayout.BeginHorizontal();
-                    //    GUILayout.Label("pitch:");
-                    //    pitch_ctrl_str = GUILayout.TextField(pitch_ctrl_str);
-                    //GUILayout.EndHorizontal();
-                    
-                    // traits system
-                    GUILayout.Space(15.0f);
-                    gui_traits();
-                GUILayout.EndVertical();
+            GUILayout.BeginVertical(GUILayout.Width(graph_width + 10));
+            // draw pitch box
+            GUILayout.Label("pitch");
+            GUILayout.Box(pitch_texture);
+            // draw yaw box
+            GUILayout.Label("yaw");
+            GUILayout.Box(yaw_texture);
+            GUILayout.EndVertical();
+            // draw side text
+            GUILayout.BeginVertical(GUILayout.Width(wnd_width - graph_width - 30));
+            GUILayout.Label("side");
+            bool draw = GUILayout.Button("Update");
+            if (!PlanetSelection.isActive && GUILayout.Button("Planet"))
+            {
+                var a = new GameObject().AddComponent<PlanetSelection>();
+            }
+            autoUpdate = GUILayout.Toggle(autoUpdate, new GUIContent("Auto-update", "Update the graph after any change"));
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("AoA range:", "AoA and sideslip range to plot, degrees"));
+
+            aoa_range_str = GUILayout.TextField(aoa_range_str);
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("AoA marks:", "Horizontal axis marks step, degrees"));
+            aoa_mark_delta_str = GUILayout.TextField(aoa_mark_delta_str);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("AoA compress:", "Zero for 1:1 AoA axis, positive for quadratic compression.\nHelps to focus on important stuff near zero AoA while not loosing large-AoA behaviour"));
+            aoa_compress_str = GUILayout.TextField(aoa_compress_str);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("Speed:", "Speed towards root part nose direction, m/s.\nEnter negative values to analyze retrograde stability."));
+            speed_str = GUILayout.TextField(speed_str);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("Altitude:", "Meters above sea level"));
+            alt_str = GUILayout.TextField(alt_str);
+            GUILayout.EndHorizontal();
+            //GUILayout.BeginHorizontal();
+            //    GUILayout.Label("pitch:");
+            //    pitch_ctrl_str = GUILayout.TextField(pitch_ctrl_str);
+            //GUILayout.EndHorizontal();
+
+
+            // traits system
+            GUILayout.Space(15.0f);
+            gui_traits();
+            GUILayout.Space(15.0f);
+
+            var color = GUI.color;
+            GUI.color = Color.blue;
+            GUILayout.Label(new GUIContent("Lift to Drag ratio", "Shows the ratio of lift to drag, higher is better"));
+            GUILayout.Label(new GUIContent("Blue vertical line", "AoA on wich Lift equals -(gravity + centrifugal)"));
+            GUI.color = color;
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
+
+            if (Event.current.type == EventType.Repaint && GUI.tooltip != tooltip)
+                tooltip = GUI.tooltip;
+
             GUI.DragWindow();
 
             if (draw)
                 update_graphs();
         }
 
-        public static void save_settings()
+        public void save_settings()
         {
             if (conf == null)
                 conf = PluginConfiguration.CreateForType<CorrectCoL>();
@@ -136,7 +226,7 @@ namespace CorrectCoL
             }
         }
 
-        public static void load_settings()
+        public void load_settings()
         {
             if (conf == null)
                 conf = PluginConfiguration.CreateForType<CorrectCoL>();
@@ -159,7 +249,7 @@ namespace CorrectCoL
         static Texture2D pitch_texture = new Texture2D(graph_width, graph_height, TextureFormat.ARGB32, false);
         static Texture2D yaw_texture = new Texture2D(graph_width, graph_height, TextureFormat.ARGB32, false);
 
-        public static void init_textures(bool apply = false)
+        public void init_textures(bool apply = false)
         {
             var fillcolor = Color.black;
             var arr = pitch_texture.GetPixels();
@@ -177,7 +267,7 @@ namespace CorrectCoL
         static int aoa_mark_delta = 15;
         static string aoa_mark_delta_str = 15.ToString();
 
-        static void init_axes()
+        void init_axes()
         {
             // aoa axis
             int x0 = 0;
@@ -234,7 +324,7 @@ namespace CorrectCoL
             }
         }
 
-        public static void update_graphs()
+        public void update_graphs()
         {
             init_textures();
             init_axes();
@@ -250,16 +340,16 @@ namespace CorrectCoL
             yaw_texture.Apply();
         }
 
-        static void DrawLine(Texture2D tex, int x1, int y1, int x2, int y2, Color col)
+        void DrawLine(Texture2D tex, int x1, int y1, int x2, int y2, Color col)
         {
             int dy = (int)(y2 - y1);
             int dx = (int)(x2 - x1);
             int stepx, stepy;
 
             if (dy < 0) { dy = -dy; stepy = -1; }
-                else { stepy = 1; }
+            else { stepy = 1; }
             if (dx < 0) { dx = -dx; stepx = -1; }
-                else { stepx = 1; }
+            else { stepx = 1; }
             dy <<= 1;
             dx <<= 1;
 
@@ -281,7 +371,8 @@ namespace CorrectCoL
                     tex.SetPixel(x1, y1, col);
                 }
             }
-            else {
+            else
+            {
                 fraction = dx - (dy >> 1);
                 while (Mathf.Abs(y1 - y2) > 1)
                 {
@@ -321,7 +412,7 @@ namespace CorrectCoL
         static float[] wet_drag = new float[num_pts * 2 - 1];
         static float[] LtD = new float[num_pts * 2 - 1];
 
-        static void calculate_moments()
+        void calculate_moments()
         {
             double.TryParse(alt_str, out altitude);
             float.TryParse(speed_str, out speed);
@@ -381,7 +472,7 @@ namespace CorrectCoL
 
         const float draw_scale = 0.8f;
 
-        static int aoa2pixel(float aoa)
+        int aoa2pixel(float aoa)
         {
             int middle = graph_width / 2;
             float x2pixel = middle / (float)(num_pts - 1);
@@ -396,7 +487,7 @@ namespace CorrectCoL
             return middle + (int)Mathf.Round(x * x2pixel);
         }
 
-        static void draw_moments()
+        void draw_moments()
         {
             // pitch moments
             float max_pmoment = Mathf.Max(Mathf.Abs(wet_torques_aoa.Max()), Mathf.Abs(wet_torques_aoa.Min()));
@@ -447,13 +538,13 @@ namespace CorrectCoL
             }
         }
 
-        public static Vector3 get_torque_aoa(float aoa, ref float lift, ref float drag)
+        public Vector3 get_torque_aoa(float aoa, ref float lift, ref float drag)
         {
             setup_qrys(aoa, 0.0f);
             return get_part_torque_recurs(EditorLogic.RootPart, CoM, ref lift, ref drag);
         }
 
-        public static Vector3 get_torque_sideslip(float slip)
+        public Vector3 get_torque_sideslip(float slip)
         {
             setup_qrys(0.0f, slip);
             float a = 0.0f, b = 0.0f;
@@ -470,14 +561,14 @@ namespace CorrectCoL
 
         static float mach;
 
-        static float pitch_ctrl = 0.0f;
-        static string pitch_ctrl_str = 0.0f.ToString();
+        //static float pitch_ctrl = 0.0f;
+        //static string pitch_ctrl_str = 0.0f.ToString();
 
         static CenterOfLiftQuery qry = new CenterOfLiftQuery();
 
-        static void setup_qrys(float AoA, float sideslip)
+        void setup_qrys(float AoA, float sideslip)
         {
-            CelestialBody home = Planetarium.fetch.Home;
+            CelestialBody home = PlanetSelection.selectedBody; //  Planetarium.fetch.Home;
 
             pressure = home.GetPressure(Math.Max(0.0, altitude));
             density = home.GetDensity(pressure, home.GetTemperature(altitude));
@@ -493,7 +584,7 @@ namespace CorrectCoL
             qry.refVector *= speed;
         }
 
-        static Vector3 get_part_torque_recurs(Part p, Vector3 CoM, ref float lift, ref float drag)
+        Vector3 get_part_torque_recurs(Part p, Vector3 CoM, ref float lift, ref float drag)
         {
             if (p == null)
                 return Vector3.zero;
@@ -508,12 +599,12 @@ namespace CorrectCoL
 
         static FieldInfo deflection_field;
 
-        public static void init_reflections()
+        public void init_reflections()
         {
             deflection_field = typeof(ModuleControlSurface).GetField("deflection", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        public static Vector3 get_part_torque(CenterOfLiftQuery qry, Part p, Vector3 CoM, ref float lift, ref float drag)
+        public Vector3 get_part_torque(CenterOfLiftQuery qry, Part p, Vector3 CoM, ref float lift, ref float drag)
         {
             if (p == null || (p.Rigidbody != p.rb) && !PhysicsGlobals.ApplyDragToNonPhysicsParts)
                 return Vector3.zero;
@@ -631,7 +722,7 @@ namespace CorrectCoL
                                 drag_force = drag_force * (1.0f - csurf.ctrlSurfaceArea);
                                 drag_force += csurf.GetDragVector(dragvect, abs, q) * csurf.ctrlSurfaceArea;
                             }
-                        }                       
+                        }
 
                         res += Vector3.Cross(lift_force, lift_pos - CoM);
                         res += Vector3.Cross(drag_force, drag_pos - CoM);
@@ -647,7 +738,7 @@ namespace CorrectCoL
             return Vector3.zero;
         }
 
-        public static Vector3 dry_CoM_recurs(Part p, ref float mass_counter, ref float wet_mass)
+        public Vector3 dry_CoM_recurs(Part p, ref float mass_counter, ref float wet_mass)
         {
             Vector3 res = Vector3.zero;
             if (p == null)
@@ -656,7 +747,7 @@ namespace CorrectCoL
                 res = p.partTransform.TransformPoint(p.CoMOffset) * p.mass;
             else
                 if (p.parent != null)
-                    res = p.parent.partTransform.TransformPoint(p.parent.CoMOffset) * p.mass;
+                res = p.parent.partTransform.TransformPoint(p.parent.CoMOffset) * p.mass;
             mass_counter += p.mass;
             wet_mass += p.mass + p.GetResourceMass();
             for (int i = 0; i < p.children.Count; i++)
@@ -676,7 +767,7 @@ namespace CorrectCoL
 
         static StabilityReport[] stability_reports = new StabilityReport[4];
 
-        static void analyze_traits()
+        void analyze_traits()
         {
             // pitch wet statical stability
             pitch_wet_stability_region = find_stability_region(wet_torques_aoa);
@@ -694,7 +785,7 @@ namespace CorrectCoL
             level_flight_aoa = find_level_flight_aoa();
         }
 
-        static float find_level_flight_aoa()
+        float find_level_flight_aoa()
         {
             float res = 0.0f;
             int i = num_pts;
@@ -721,7 +812,7 @@ namespace CorrectCoL
                     break;
                 }
                 cur_lift_acc = new_lift_acc;
-                i += step;                    
+                i += step;
             } while (i < num_pts * 2 - 1 && i >= 0);
 
             if (!found)
@@ -730,7 +821,7 @@ namespace CorrectCoL
             return res;
         }
 
-        static float find_stability_region(float[] torque_data)
+         float find_stability_region(float[] torque_data)
         {
             int start = num_pts;
             float torque = torque_data[start];
@@ -771,7 +862,7 @@ namespace CorrectCoL
                     }
                     // we've found equilibrium between start-1 and start
                     upper = start;
-                    lower = start - 1;                    
+                    lower = start - 1;
                 }
                 else
                 {
@@ -809,11 +900,11 @@ namespace CorrectCoL
                     break;
                 }
                 torque = torque_data[upper];
-                if (torque >= 0.0f)                    
+                if (torque >= 0.0f)
                     upper_aoa = Mathf.Lerp(AoA_net[upper - 1], AoA_net[upper],
                         Mathf.Abs(torque_data[upper - 1]) / (Mathf.Abs(torque_data[upper - 1]) + torque));
             }
-            
+
             // lower bound:
             torque = torque_data[lower];
             while (torque > 0.0f)
@@ -835,7 +926,7 @@ namespace CorrectCoL
 
         static GUIStyle stable_style, partial_style, unstable_style;
 
-        public static void init_styles()
+        public  void init_styles()
         {
             stable_style = new GUIStyle(GUI.skin.label);
             stable_style.normal.textColor = Color.green;
@@ -847,7 +938,7 @@ namespace CorrectCoL
             unstable_style.normal.textColor = Color.red;
         }
 
-        static void gui_traits()
+         void gui_traits()
         {
             if (AoA_net.Count > 3)
             {
@@ -866,7 +957,7 @@ namespace CorrectCoL
                                 break;
                             case StabilityType.Unstable:
                                 GUILayout.Label(rep.report, unstable_style);
-                                break;                            
+                                break;
                         }
                     }
                 }
@@ -891,7 +982,7 @@ namespace CorrectCoL
             }
         }
 
-        static StabilityReport report_stability(string name, float region)
+         StabilityReport report_stability(string name, float region)
         {
             if (region >= 2.0f * stability_region_req)
                 return new StabilityReport(name + " is stable", StabilityType.Stable);

@@ -1,3 +1,11 @@
+### CorrectCoL 1.5.0
+- Adoption by Linuxgurugamer
+- Added AutoUpdate toggle
+- Added Destroy() and lines to remove gameevents whch were added in the Start()
+- Changed GraphWindow from static code to dynamic, added support code
+- Added tooltips to entry field labels
+- made window background solid
+
 ### CorrectCoL 1.4.5
 - test for KSP-AVC.
 

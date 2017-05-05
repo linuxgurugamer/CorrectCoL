@@ -14,10 +14,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OU
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 using UnityEngine;
 using UnityEngine.UI;
 using KSP.UI.Screens;
@@ -28,6 +24,7 @@ namespace CorrectCoL
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public partial class CorrectCoL: MonoBehaviour
     {
+        public static CorrectCoL Instance;
         public EditorVesselOverlays overlays;
         public EditorMarker_CoL old_CoL_marker;
         public static CoLMarkerFull new_CoL_marker;
@@ -36,9 +33,11 @@ namespace CorrectCoL
         static bool far_found = false;
 
         Button.ButtonClickedEvent clickEvent;
+        public GraphWindow graphWindow;
 
         void Start()
         {
+            Instance = this;
             Debug.Log("[CorrectCoL]: Starting!");
 
             if (!far_searched)
@@ -75,9 +74,10 @@ namespace CorrectCoL
                 return;
             }
             bodylift_curves = PhysicsGlobals.GetLiftingSurfaceCurve("BodyLift");
-            if (new_CoL_marker == null)
+         //   if (new_CoL_marker == null)
             {
                 new_CoL_marker = this.gameObject.AddComponent<CoLMarkerFull>();
+                
                 CoLMarkerFull.lift_curves = bodylift_curves;
                 new_CoL_marker.posMarkerObject = (GameObject)GameObject.Instantiate(old_CoL_marker.dirMarkerObject);
                 new_CoL_marker.posMarkerObject.transform.parent = new_CoL_marker.transform;
@@ -88,23 +88,43 @@ namespace CorrectCoL
                 {
                     child.gameObject.layer = 2;
                 }
-                GameEvents.onEditorRestart.Add(new EventVoid.OnEvent(TurnOffCoL));
+                GameEvents.onEditorRestart.Add(TurnOffCoL);
+                graphWindow = new GraphWindow();
                 // should be called once, so let's deserialize graph here too                
-                GraphWindow.load_settings();
-                GraphWindow.init_textures(true);
-                GraphWindow.init_reflections();
+                graphWindow.Start();
+                graphWindow.load_settings();
+                graphWindow.init_textures(true);
+                graphWindow.init_reflections();
 
                 clickEvent = new Button.ButtonClickedEvent();
                 clickEvent.AddListener(ToggleCoL);
             }
             GameEvents.onGUIApplicationLauncherReady.Add(onAppLauncherLoad);
             GameEvents.onGUIApplicationLauncherUnreadifying.Add(onAppLauncherUnload);
+
+            GameEvents.onEditorShipModified.Add(EditorPartEvent);
+
             onAppLauncherLoad();
-            GraphWindow.shown = false;
+            graphWindow.shown = false;
             new_CoL_marker.enabled = false;
             old_CoL_marker.gameObject.SetActive(false);
             overlays.toggleCoLbtn.onClick = clickEvent;
             //overlays.toggleCoLbtn.methodToInvoke = "ToggleCoL";
+        }
+
+        void Destroy()
+        {
+            GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
+            GameEvents.onGUIApplicationLauncherUnreadifying.Remove(onAppLauncherUnload);
+            GameEvents.onEditorRestart.Remove(TurnOffCoL);
+            GameEvents.onEditorShipModified.Remove(EditorPartEvent);
+            Destroy(new_CoL_marker);
+            graphWindow = null;
+        }
+        void EditorPartEvent(ShipConstruct s)
+        {
+            if (graphWindow.autoUpdate && graphWindow.shown)
+                graphWindow.update_graphs();
         }
 
         public void ToggleCoL()
@@ -123,8 +143,8 @@ namespace CorrectCoL
         public void OnDestroy()
         {
             GameEvents.onEditorRestart.Remove(new EventVoid.OnEvent(TurnOffCoL));
-            GraphWindow.save_settings();
-            GraphWindow.shown = false;
+            graphWindow.save_settings();
+            graphWindow.shown = false;
         }
 
         public void TurnOffCoL()
@@ -145,7 +165,7 @@ namespace CorrectCoL
                     launcher_btn = ApplicationLauncher.Instance.AddModApplication(
                         OnALTrue, OnALFalse, null, null, null, null,
                         ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
-                        GameDatabase.Instance.GetTexture("CorrectCoL/icon", false));
+                        GameDatabase.Instance.GetTexture("CorrectCoL/Images/icon", false));
             }
         }
 
@@ -159,19 +179,19 @@ namespace CorrectCoL
             }
         }
 
-        static void OnALTrue()
+        void  OnALTrue()
         {
-            GraphWindow.shown = true;
+           graphWindow.shown = true;
         }
 
-        static void OnALFalse()
+        void OnALFalse()
         {
-            GraphWindow.shown = false;
+            graphWindow.shown = false;
         }
 
-        void OnGUI()
+         void OnGUI()
         {
-            GraphWindow.OnGUI();
+            graphWindow.OnGUI();
         }
 
     }
