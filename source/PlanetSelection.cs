@@ -13,7 +13,7 @@ namespace CorrectCoL
     {
         static public CelestialBody selectedBody = Planetarium.fetch.Home;
 
-        List<CelestialBody> bodiesList;
+        List<CelestialBody> bodiesList = null;
         public static bool isActive = false;
         const int wnd_width = 200;
         const int wnd_height = 500;
@@ -21,10 +21,22 @@ namespace CorrectCoL
         Vector2 bodiesScrollPosition;
         GUIStyle winStyle;
 
+        public static void setSelectedBody(string name)
+        {
+            foreach (CelestialBody body in GameObject.FindObjectsOfType(typeof(CelestialBody)))
+            {
+                if (body.name == name)
+                {
+                    selectedBody = body;
+                    return;
+                }
+            }
+        }
+
         List<CelestialBody> getAllowableBodies(String filter = "ALL")
         {
             CelestialBody parent;
-            List<CelestialBody> bodiesList = new List<CelestialBody>();
+            bodiesList = new List<CelestialBody>();
             CelestialBody[] tmpBodies = GameObject.FindObjectsOfType(typeof(CelestialBody)) as CelestialBody[];
 
             foreach (CelestialBody body in GameObject.FindObjectsOfType(typeof(CelestialBody)))
@@ -81,7 +93,7 @@ namespace CorrectCoL
             winStyle.normal.background = tex;
         }
 
-        void DestroyAfterTime()
+        void OnDestroy()
         {
             isActive = false;
         }
@@ -106,6 +118,9 @@ namespace CorrectCoL
                 if (GUILayout.Button(body.name, GUILayout.Height(30)))
                 {
                     selectedBody = body;
+
+                    CorrectCoL_Persistent.Instance.lastSelectedPlanet = body.name;
+
                     if (CorrectCoL.Instance.graphWindow.autoUpdate && CorrectCoL.Instance.graphWindow.shown)
                         CorrectCoL.Instance.graphWindow.update_graphs();
                 }

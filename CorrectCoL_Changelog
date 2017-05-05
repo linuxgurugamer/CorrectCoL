@@ -1,3 +1,10 @@
+### 1.5.1
+- Added Settings page
+- Added option to make tooltips optional
+- Addedoption to make the autoupdate default to on
+- Added option to specify using last selected planet 
+- Fixed bug when closing planet selection window
+
 ### CorrectCoL 1.5.0
 - Adoption by Linuxgurugamer
 - Added AutoUpdate toggle
@@ -5,6 +12,7 @@
 - Changed GraphWindow from static code to dynamic, added support code
 - Added tooltips to entry field labels
 - made window background solid
+- Added selectable planets
 
 ### CorrectCoL 1.4.5
 - test for KSP-AVC.

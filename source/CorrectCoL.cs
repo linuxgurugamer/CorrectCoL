@@ -35,6 +35,9 @@ namespace CorrectCoL
         Button.ButtonClickedEvent clickEvent;
         public GraphWindow graphWindow;
 
+        [KSPField(isPersistant = true)]
+        public string testlastSelectedPlanet = "aaaabbbb";
+
         void Start()
         {
             Instance = this;
@@ -112,15 +115,6 @@ namespace CorrectCoL
             //overlays.toggleCoLbtn.methodToInvoke = "ToggleCoL";
         }
 
-        void Destroy()
-        {
-            GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Remove(onAppLauncherUnload);
-            GameEvents.onEditorRestart.Remove(TurnOffCoL);
-            GameEvents.onEditorShipModified.Remove(EditorPartEvent);
-            Destroy(new_CoL_marker);
-            graphWindow = null;
-        }
         void EditorPartEvent(ShipConstruct s)
         {
             if (graphWindow.autoUpdate && graphWindow.shown)
@@ -136,15 +130,24 @@ namespace CorrectCoL
                 new_CoL_marker.enabled = !new_CoL_marker.enabled;
             }
             else
+            {
                 new_CoL_marker.enabled = false;
+            }
             new_CoL_marker.posMarkerObject.SetActive(new_CoL_marker.enabled);
         }
 
         public void OnDestroy()
         {
-            GameEvents.onEditorRestart.Remove(new EventVoid.OnEvent(TurnOffCoL));
+            Debug.Log("CorrectCoL.OnDestroy");
             graphWindow.save_settings();
             graphWindow.shown = false;
+
+            GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
+            GameEvents.onGUIApplicationLauncherUnreadifying.Remove(onAppLauncherUnload);
+            GameEvents.onEditorRestart.Remove(TurnOffCoL);
+            GameEvents.onEditorShipModified.Remove(EditorPartEvent);
+            Destroy(new_CoL_marker);
+            graphWindow = null;
         }
 
         public void TurnOffCoL()
@@ -187,6 +190,9 @@ namespace CorrectCoL
         void OnALFalse()
         {
             graphWindow.shown = false;
+            if (graphWindow.planetSelection != null)
+                Destroy(graphWindow.planetSelection);
+            graphWindow.planetSelection = null;
         }
 
          void OnGUI()

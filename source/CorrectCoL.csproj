@@ -37,14 +37,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="Persistent.cs" />
     <Compile Include="PlanetSelection.cs" />
     <Compile Include="CorrectCoL.cs" />
     <Compile Include="CoLMarkerFull.cs" />
     <Compile Include="GraphWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AssemblyVersion.tt">

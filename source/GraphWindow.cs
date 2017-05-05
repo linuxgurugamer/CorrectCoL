@@ -36,6 +36,9 @@ namespace CorrectCoL
         static bool locked = false;
 
         GUIStyle winStyle;
+        
+        public bool autoUpdate;
+        public PlanetSelection planetSelection = null;
 
         public void  Start()
         {
@@ -54,6 +57,8 @@ namespace CorrectCoL
             winStyle.active.background = tex;
             winStyle.focused.background = tex;
             winStyle.normal.background = tex;
+
+            autoUpdate = HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().autoupdate;
         }
 
         string tooltip = "";
@@ -84,16 +89,8 @@ namespace CorrectCoL
 
         void TooltipWindow(int id)
         {
-            //DrawTooltip();
-
-            //Log.Info("TooltipWindow, tooltip: " + tooltip);
-            GUI.Label(new Rect(2, 0, tooltipRect.width - 2, tooltipRect.height), tooltip, HighLogic.Skin.label);
-        }
-
-        void displayRect()
-        {
-            Rect aa = new Rect(); ;
-            GUI.TextField(aa, "ssss");
+            if (HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().tooltips)
+                GUI.Label(new Rect(2, 0, tooltipRect.width - 2, tooltipRect.height), tooltip, HighLogic.Skin.label);
         }
 
         public void OnGUI()
@@ -135,8 +132,6 @@ namespace CorrectCoL
             }
         }
 
-        public bool autoUpdate = false;
-
         void _drawGUI(int id)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
@@ -152,9 +147,12 @@ namespace CorrectCoL
             GUILayout.BeginVertical(GUILayout.Width(wnd_width - graph_width - 30));
             GUILayout.Label("side");
             bool draw = GUILayout.Button("Update");
-            if (!PlanetSelection.isActive && GUILayout.Button("Planet"))
+            if (!PlanetSelection.isActive)
             {
-                var a = new GameObject().AddComponent<PlanetSelection>();
+                if (GUILayout.Button("Planet"))
+                {
+                    planetSelection = new GameObject().AddComponent<PlanetSelection>();
+                }
             }
             autoUpdate = GUILayout.Toggle(autoUpdate, new GUIContent("Auto-update", "Update the graph after any change"));
 

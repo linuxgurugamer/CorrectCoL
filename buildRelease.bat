@@ -47,11 +47,10 @@ type CorrectCOL.version
 
 echo Version:  %VERSION%
 
+
+
+copy /y License.txt GameData\CorrectCOL
 pause
-
-
-copy /y /s License.txt GameData\CorrectCOL
-
 copy /Y README.md GameData\CorrectCOL
  
 set FILE="%RELEASEDIR%\CorrectCOL-%VERSION%.zip"
