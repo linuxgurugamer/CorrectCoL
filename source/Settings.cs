@@ -17,6 +17,7 @@ namespace CorrectCoL
         public override string Title { get { return "Correct CoL"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Correct CoL"; } }
+        public override string DisplaySection { get { return "Correct CoL"; } }
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return true; } }
 

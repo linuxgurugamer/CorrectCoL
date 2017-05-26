@@ -43,7 +43,6 @@ del tmpfile
 set VERSION=%major%.%minor%.%patch%
 if "%build%" NEQ "0"  set VERSION=%VERSION%.%build%
 
-type CorrectCOL.version
 
 echo Version:  %VERSION%
 

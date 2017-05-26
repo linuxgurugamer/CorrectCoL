@@ -16,15 +16,14 @@ using Upgradeables;
 #if true
 namespace CorrectCoL
 {
-     [KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
+    [KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
         GameScenes.SPACECENTER,
         GameScenes.EDITOR,
         GameScenes.FLIGHT,
         GameScenes.TRACKSTATION,
         GameScenes.SPACECENTER
      })]
-    //[KSPAddon(KSPAddon.Startup.EditorAny, false)]
-    public class CorrectCoL_Persistent : ScenarioModule // MonoBehaviour
+    public class CorrectCoL_Persistent : ScenarioModule
     {
         static public CorrectCoL_Persistent Instance;        
 
