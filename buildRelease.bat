@@ -4,7 +4,6 @@ rem @echo off
 copy /Y "source\bin\Release\CorrectCOL.dll" "GameData\CorrectCOL\Plugins"
 copy /Y CorrectCOL.version GameData\CorrectCOL
 
-cd ..
 copy /Y ..\MiniAVC.dll GameData\CorrectCOL
 
 set DEFHOMEDRIVE=d:
