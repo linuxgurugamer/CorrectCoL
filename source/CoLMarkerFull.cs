@@ -40,9 +40,10 @@ namespace CorrectCoL
             float mach = 0.0f;
 
             CenterOfLiftQuery qry = new CenterOfLiftQuery();
-
+            
             void LateUpdate()
             {
+            
                 setup(qry);
 
                 force_occlusion_update_recurse(EditorLogic.RootPart);

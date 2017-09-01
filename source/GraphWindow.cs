@@ -81,9 +81,6 @@ namespace CorrectCoL
                 if (tooltipX < 0) tooltipX = 0;
                 if (tooltipY < 0) tooltipY = 0;
                 tooltipRect = new Rect(tooltipX - 1, tooltipY - tooltipSize.y, tooltipSize.x + 4, tooltipSize.y);
-            //    Log.Info("display x: " + tooltipX.ToString() + ", y: " + tooltipY.ToString() + ",  size.x,y: " + tooltipSize.x.ToString() + ", " + tooltipSize.y.ToString() + ", tooltip: " + tooltip);
-
-                //  GUI.Label(new Rect(x, y, size.x, size.y), tooltip);
             }
         }
 
@@ -132,8 +129,15 @@ namespace CorrectCoL
             }
         }
 
+
         void _drawGUI(int id)
         {
+            GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
+            var b = CorrectCoL.showStockMarker;
+            CorrectCoL.showStockMarker = GUILayout.Toggle(CorrectCoL.showStockMarker, "Show stock marker");
+            if (b != CorrectCoL.showStockMarker)
+                CorrectCoL.Instance.SwapMarkers();
+            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
             GUILayout.BeginVertical(GUILayout.Width(graph_width + 10));
             // draw pitch box
@@ -211,8 +215,11 @@ namespace CorrectCoL
             if (conf == null)
                 conf = PluginConfiguration.CreateForType<CorrectCoL>();
             Debug.Log("[CorrectCoL]: serializing");
-            conf.SetValue("x", wnd_rect.x.ToString());
-            conf.SetValue("y", wnd_rect.y.ToString());
+            if (wnd_rect != null)
+            {
+                conf.SetValue("x", wnd_rect.x.ToString());
+                conf.SetValue("y", wnd_rect.y.ToString());
+            }
             conf.SetValue("range", aoa_range.ToString());
             conf.save();
 
