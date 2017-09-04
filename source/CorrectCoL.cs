@@ -187,9 +187,11 @@ namespace CorrectCoL
 
         public void OnDestroy()
         {
-            graphWindow.save_settings();
-            graphWindow.shown = false;
-
+            if (graphWindow != null)
+            {
+                graphWindow.save_settings();
+                graphWindow.shown = false;
+            }
             GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
             GameEvents.onGUIApplicationLauncherUnreadifying.Remove(onAppLauncherUnload);
             GameEvents.onEditorRestart.Remove(TurnOffCoL);
