@@ -1,3 +1,7 @@
+### 1.6.2.1
+	Really Fixed exception on exiting editor this time.  Was actually a problem in the VAB
+	Fixed build to release a build compile rather than a debug compile
+
 ### 1.6.2
 	Fixed exception on exiting  editor
 

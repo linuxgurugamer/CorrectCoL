@@ -192,11 +192,16 @@ namespace CorrectCoL
                 graphWindow.save_settings();
                 graphWindow.shown = false;
             }
-            GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Remove(onAppLauncherUnload);
-            GameEvents.onEditorRestart.Remove(TurnOffCoL);
-            GameEvents.onEditorShipModified.Remove(EditorPartEvent);
-            Destroy(new_CoL_marker);
+            if (GameEvents.onGUIApplicationLauncherReady != null)
+                GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
+            if (GameEvents.onGUIApplicationLauncherUnreadifying != null)
+                GameEvents.onGUIApplicationLauncherUnreadifying.Remove(onAppLauncherUnload);
+            if (GameEvents.onEditorRestart != null)
+                GameEvents.onEditorRestart.Remove(TurnOffCoL);
+            if (GameEvents.onEditorShipModified != null)
+                GameEvents.onEditorShipModified.Remove(EditorPartEvent);
+            if (new_CoL_marker != null)
+                Destroy(new_CoL_marker);
             graphWindow = null;
         }
 
