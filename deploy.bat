@@ -7,4 +7,4 @@ copy /Y "source\bin\Debug\CorrectCOL.dll" "GameData\CorrectCOL\Plugins"
 copy /Y CorrectCOL.version GameData\CorrectCOL
 
 cd GameData
-xcopy /y /s CorrectCOL "%H%\GameData\CorrectCOL"
+xcopy /y /s /I CorrectCOL "%H%\GameData\CorrectCOL"

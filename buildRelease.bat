@@ -48,9 +48,7 @@ if "%build%" NEQ "0"  set VERSION=%VERSION%.%build%
 echo Version:  %VERSION%
 
 
-
 copy /y License.txt GameData\CorrectCOL
-pause
 copy /Y README.md GameData\CorrectCOL
  
 set FILE="%RELEASEDIR%\CorrectCOL-%VERSION%.zip"
