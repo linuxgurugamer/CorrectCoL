@@ -20,6 +20,7 @@ using System.Text;
 using UnityEngine;
 using System.Reflection;
 using KSP.IO;
+using ClickThroughFix;
 
 namespace CorrectCoL
 {
@@ -105,7 +106,7 @@ namespace CorrectCoL
                 if (drawTooltip /* && HighLogic.CurrentGame.Parameters.CustomParams<JanitorsClosetSettings>().buttonTooltip*/ && tooltip != null && tooltip.Trim().Length > 0)
                 {
                     SetupTooltip();
-                    GUI.Window(1234, tooltipRect, TooltipWindow, "");
+                    ClickThruBlocker.GUIWindow(1234, tooltipRect, TooltipWindow, "");
                 }
                 if (wnd_rect.Contains(Input.mousePosition))
                 {
@@ -120,7 +121,7 @@ namespace CorrectCoL
                     //editorlogic.Unlock("CorrectCoLWindow");
                     locked = false;
                 }
-                wnd_rect = GUILayout.Window(54665949, wnd_rect, _drawGUI, "Static stability analysis", winStyle);
+                wnd_rect = ClickThruBlocker.GUILayoutWindow(54665949, wnd_rect, _drawGUI, "Static stability analysis", winStyle);
             }
             else if (locked)
             {

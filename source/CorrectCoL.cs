@@ -17,6 +17,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using KSP.UI.Screens;
+using ToolbarControl_NS;
 
 namespace CorrectCoL
 {
@@ -211,10 +212,12 @@ namespace CorrectCoL
             new_CoL_marker.posMarkerObject.SetActive(false);
         }
 
-        static ApplicationLauncherButton launcher_btn;
+       // static ApplicationLauncherButton launcher_btn;
+        static ToolbarControl toolbarControl = null;
 
         void onAppLauncherLoad()
         {
+#if false
             if (ApplicationLauncher.Ready)
             {
                 bool hidden;
@@ -225,16 +228,39 @@ namespace CorrectCoL
                         ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
                         GameDatabase.Instance.GetTexture("CorrectCoL/Images/icon", false));
             }
+#endif
+            if (toolbarControl != null)
+                return;
+            toolbarControl = gameObject.AddComponent<ToolbarControl>();
+            toolbarControl.AddToAllToolbars(OnALTrue, OnALFalse,
+                 ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
+                 "CorrectCoL",
+                "CorrectCoLButton",
+                "CorrectCoL/Images/icon",
+                "CorrectCoL/Images/iconSmall",
+                "Correct CoL"
+            );
+            toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().useBlizzy);
+
         }
 
         private void onAppLauncherUnload(GameScenes scene)
         {
             // remove button
+#if false
             if (ApplicationLauncher.Instance != null && launcher_btn != null)
             {
                 ApplicationLauncher.Instance.RemoveModApplication(launcher_btn);
                 launcher_btn = null;
             }
+#endif
+           
+        }
+        void Destroy()
+        {
+            toolbarControl.OnDestroy();
+            Destroy(toolbarControl);
+            toolbarControl = null;
         }
 
         void OnALTrue()
@@ -252,6 +278,8 @@ namespace CorrectCoL
 
         void OnGUI()
         {
+            //if (toolbarControl != null)
+            //    toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().useBlizzy);
             graphWindow.OnGUI();
         }
 

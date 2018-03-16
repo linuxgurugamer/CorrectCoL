@@ -22,10 +22,15 @@ namespace CorrectCoL
         public override bool HasPresets { get { return true; } }
 
 
+        [GameParameters.CustomParameterUI("Use Blizzy Toolbar if available")]
+        public bool useBlizzy = false;
+
         [GameParameters.CustomParameterUI("Active in mod")]
         public bool activeInGame = true;
+
         [GameParameters.CustomParameterUI("Active in VAB")]
         public bool activeInVAB = false;
+
         [GameParameters.CustomParameterUI("Active in SPH")]
         public bool activeInSPH = true;
 

@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using System.Reflection;
 using KSP.IO;
+using ClickThroughFix;
 
 namespace CorrectCoL
 {
@@ -103,7 +104,7 @@ namespace CorrectCoL
             planetWin.height = GraphWindow.wnd_rect.height;
             planetWin.x = GraphWindow.wnd_rect.x + GraphWindow.wnd_rect.width;
             planetWin.y = GraphWindow.wnd_rect.y;
-            planetWin = GUILayout.Window(565949, planetWin, planetSelWin, "Planetary Body Selection", winStyle);
+            planetWin = ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, "Planetary Body Selection", winStyle);
         }
 
         void planetSelWin(int id)
