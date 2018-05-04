@@ -214,6 +214,8 @@ namespace CorrectCoL
 
        // static ApplicationLauncherButton launcher_btn;
         static ToolbarControl toolbarControl = null;
+        internal const string MODID = "CorrectCoL_NS";
+        internal const string MODNAME = "Correct CoL";
 
         void onAppLauncherLoad()
         {
@@ -234,13 +236,12 @@ namespace CorrectCoL
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
             toolbarControl.AddToAllToolbars(OnALTrue, OnALFalse,
                  ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
-                 "CorrectCoL",
+                 MODID,
                 "CorrectCoLButton",
                 "CorrectCoL/Images/icon",
                 "CorrectCoL/Images/iconSmall",
-                "Correct CoL"
+                MODNAME
             );
-            toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().useBlizzy);
 
         }
 
@@ -278,8 +279,6 @@ namespace CorrectCoL
 
         void OnGUI()
         {
-            //if (toolbarControl != null)
-            //    toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().useBlizzy);
             graphWindow.OnGUI();
         }
 
