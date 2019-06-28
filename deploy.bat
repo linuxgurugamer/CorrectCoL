@@ -1,5 +1,5 @@
 
-set H=R:\KSP_1.6.1_dev
+set H=R:\KSP_1.7.2_dev
 echo %H%
 cd
 
