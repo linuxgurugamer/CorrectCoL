@@ -1,10 +1,19 @@
+@echo off
 
-set H=R:\KSP_1.7.2_dev
-echo %H%
-cd
+rem H is the destination game folder
+rem GAMEDIR is the name of the mod folder (usually the mod name)
+rem GAMEDATA is the name of the local GameData
+rem VERSIONFILE is the name of the version file, usually the same as GAMEDATA,
+rem    but not always
 
-copy /Y "source\bin\Debug\CorrectCOL.dll" "GameData\CorrectCOL\Plugins"
-copy /Y CorrectCOL.version GameData\CorrectCOL
+set H=%KSPDIR%v
+set GAMEDIR=CorrectCOL
+set GAMEDATA="GameData"
+set VERSIONFILE=%GAMEDIR%.version
 
-cd GameData
-xcopy /y /s /I CorrectCOL "%H%\GameData\CorrectCOL"
+copy /Y "%1%2" "%GAMEDATA%\%GAMEDIR%\Plugins"
+copy /Y %VERSIONFILE% %GAMEDATA%\%GAMEDIR%
+
+xcopy /y /s /I %GAMEDATA%\%GAMEDIR% "%H%\GameData\%GAMEDIR%"
+
+pause
