@@ -196,7 +196,7 @@ namespace CorrectCoL
             var color = GUI.color;
             GUI.color = Color.blue;
             GUILayout.Label(new GUIContent("Lift to Drag ratio", "Shows the ratio of lift to drag, higher is better"));
-            GUILayout.Label(new GUIContent("Colored vertical lines", "Shows AoA on wich Lift equals -(gravity + centrifugal).\nGreen line displays required AoA for level flight at current mass.\nYellow line displays required AoA for level flight with a dry craft."));
+            GUILayout.Label(new GUIContent("Colored vertical lines", "Shows AoA on which Lift equals -(gravity + centrifugal).\nGreen line displays required AoA for level flight at current mass.\nYellow line displays required AoA for level flight with a dry craft."));
             GUI.color = color;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
