@@ -4,8 +4,6 @@ rem @echo off
 copy /Y "source\bin\Release\CorrectCOL.dll" "GameData\CorrectCOL\Plugins"
 copy /Y CorrectCOL.version GameData\CorrectCOL
 
-copy /Y ..\MiniAVC.dll GameData\CorrectCOL
-
 set DEFHOMEDRIVE=d:
 set DEFHOMEDIR=%DEFHOMEDRIVE%%HOMEPATH%
 set HOMEDIR=

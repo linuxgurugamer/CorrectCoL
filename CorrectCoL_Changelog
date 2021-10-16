@@ -1,5 +1,9 @@
 ChangeLog
 
+1.6.5.4
+	Added AssemblyFileVersion
+	Updated version file for 1.12
+
 1.6.5.3
 	Really did the MiniAVC update
 
