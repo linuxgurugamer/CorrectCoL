@@ -270,8 +270,8 @@ namespace CorrectCoL
             }
         }
 
-        static int aoa_mark_delta = 15;
-        static string aoa_mark_delta_str = 15.ToString();
+        static float aoa_mark_delta = 15f;
+        static string aoa_mark_delta_str = 15.ToString("F0");
 
         void init_axes()
         {
@@ -307,8 +307,8 @@ namespace CorrectCoL
             }
 
             // marks
-            int.TryParse(aoa_mark_delta_str, out aoa_mark_delta);
-            int mark_delta = Math.Max(1, aoa_mark_delta);
+            float.TryParse(aoa_mark_delta_str, out aoa_mark_delta);
+            float mark_delta = Math.Max(1f, aoa_mark_delta);
             y0 = graph_height / 2 - 5;
             y1 = graph_height / 2 + 5;
 
