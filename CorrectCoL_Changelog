@@ -1,5 +1,9 @@
 ChangeLog
 
+1.6.5.5
+	Updated verison file to use github for new version info
+	Copied web page to REDAME.md
+
 1.6.5.4
 	Thanks for github user @RA2lover for these changes:
 		Add level flight AoA marker for dry craft
